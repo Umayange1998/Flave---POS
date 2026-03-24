@@ -41,12 +41,12 @@ const palette = {
   error: ERROR,
 
   background: {
-    default: "#003049",
+    default: "#1f1f1f",
     paper: "#ffffff",
   },
 
   text: {
-    primary: "#000000",
+    primary: "#ffffff",
     secondary: "#555555",
   },
 };

@@ -2,22 +2,28 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
-import RestoreIcon from "@mui/icons-material/Restore";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
-import FastfoodIcon from "@mui/icons-material/Fastfood";
-import IconButton from "@mui/material/IconButton";
+import HomeIcon from "@mui/icons-material/Home";
+import ViewListIcon from "@mui/icons-material/ViewList";
+import PlaylistAddCircleIcon from "@mui/icons-material/PlaylistAddCircle";
+import LunchDiningIcon from "@mui/icons-material/LunchDining";
+import TableRestaurantIcon from "@mui/icons-material/TableRestaurant";
 import Button from "@mui/material/Button";
+import { useNavigate } from "react-router-dom";
 
 function Footer() {
   const [value, setValue] = React.useState(0);
+  const navigate = useNavigate();
+
   return (
     <Box
       sx={{
         width: "100%",
         position: "fixed",
         bottom: 0,
-        backgroundColor: "#313131",
+        py: 1,
+        backgroundColor: "#1d1d1d",
+        backdropFilter: "blur(10px)",
+        borderTop: "1px solid rgba(255,255,255,0.1)",
         zIndex: (theme) => theme.zIndex.drawer + 1,
       }}
     >
@@ -28,38 +34,90 @@ function Footer() {
           setValue(newValue);
         }}
         sx={{
-          backgroundColor: "#313131",
+          backgroundColor: "#1d1d1d",
           color: "#ffffff",
           zIndex: (theme) => theme.zIndex.drawer + 1,
+          display: "flex",
+          justifyContent: "space-around",
         }}
       >
         <BottomNavigationAction
-          sx={{ color: "#ffffff" }}
-          label="Recents"
-          icon={<RestoreIcon />}
-        />
-        <BottomNavigationAction
-          sx={{ color: "#ffffff" }}
-          label="Favorites"
-          icon={<FavoriteIcon />}
-        />
-        <Button
-          variant="contained"
-          color="secondary"
           sx={{
-            position: "inherit",
-            borderRadius: "50%",
-            mb: 2,
+            color: "#ffffff",
+            background: "#424242",
+            borderRadius: 8,
+            flexDirection: "row",
+            gap: 1,
+            my: 1,
+            py: 3,
           }}
-        >
-          <FastfoodIcon />
-        </Button>
+          label="Home"
+          icon={<HomeIcon />}
+          onClick={() => navigate("/")}
+        />
         <BottomNavigationAction
-          sx={{ color: "#ffffff" }}
-          label="Nearby"
-          icon={<LocationOnIcon />}
+          sx={{
+            color: "#ffffff",
+            background: "#424242",
+            borderRadius: 8,
+            flexDirection: "row",
+            gap: 1,
+            my: 1,
+            py: 3,
+          }}
+          label="Orders"
+          icon={<ViewListIcon />}
+          onClick={() => navigate("/orders")}
+        />
+
+        <BottomNavigationAction
+          sx={{
+            color: "#ffffff",
+            background: "#424242",
+            borderRadius: 8,
+            flexDirection: "row",
+            gap: 1,
+            my: 1,
+            py: 3,
+          }}
+          label="Tables"
+          icon={<TableRestaurantIcon />}
+        />
+        <BottomNavigationAction
+          sx={{
+            color: "#ffffff",
+            background: "#424242",
+            borderRadius: 8,
+            flexDirection: "row",
+            gap: 1,
+            my: 1,
+            py: 3,
+          }}
+          label="More"
+          icon={<PlaylistAddCircleIcon />}
         />
       </BottomNavigation>
+      <Button
+        variant="contained"
+        color="secondary"
+        sx={{
+          position: "absolute",
+          top: -35,
+          left: "50%",
+          transform: "translateX(-50%)",
+          borderRadius: "50%",
+          width: 70,
+          height: 70,
+          boxShadow: 3,
+        }}
+      >
+        <LunchDiningIcon
+          sx={{
+            width: 40,
+            height: 40,
+          }}
+        />
+      </Button>
     </Box>
   );
 }

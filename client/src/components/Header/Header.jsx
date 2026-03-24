@@ -160,7 +160,7 @@ function Header() {
       <AppBar
         position="fixed"
         sx={{
-          backgroundColor: "#313131",
+          backgroundColor: "#1f1f1f",
           zIndex: (theme) => theme.zIndex.drawer + 1,
         }}
       >
