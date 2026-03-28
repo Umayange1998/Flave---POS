@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Button, Grid, Typography } from "@mui/material";
 import OrderCard from "./OrderCard";
+import BackButton from "../../components/BackButton/BackButton";
 
 function Order() {
   const [active, setActive] = React.useState("All");
@@ -14,7 +15,15 @@ function Order() {
         size={12}
         sx={{ display: "flex", justifyContent: "space-between", mx: 8 }}
       >
-        <Box>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            gap: 2,
+            alignItems: "center",
+          }}
+        >
+          <BackButton />
           <Typography variant="h5">Orders</Typography>
         </Box>
         <Box sx={{ display: "flex", gap: 2 }}>
@@ -22,6 +31,7 @@ function Order() {
             onClick={() => handleFilter("all")}
             variant="contained"
             sx={{
+              boxShadow: "none",
               backgroundColor: active === "all" ? "#424242" : "transparent",
               color: "#fff",
               "&:hover": {
@@ -35,6 +45,7 @@ function Order() {
             onClick={() => handleFilter("inprogress")}
             variant="contained"
             sx={{
+              boxShadow: "none",
               backgroundColor:
                 active === "inprogress" ? "#424242" : "transparent",
               color: "#fff",
@@ -50,6 +61,7 @@ function Order() {
             onClick={() => handleFilter("contained")}
             variant="contained"
             sx={{
+              boxShadow: "none",
               backgroundColor:
                 active === "contained" ? "#424242" : "transparent",
               color: "#fff",
@@ -64,6 +76,7 @@ function Order() {
             onClick={() => handleFilter("completed")}
             variant="contained"
             sx={{
+              boxShadow: "none",
               backgroundColor:
                 active === "completed" ? "#424242" : "transparent",
               color: "#fff",
@@ -80,47 +93,28 @@ function Order() {
         <Grid
           container
           spacing={2}
-          sx={{ display: "flex", justifyContent: "space-between", mx: 5 }}
+          sx={{ display: "flex", justifyContent: "flex-start", mx: 5 }}
         >
-          <Grid size={2.5}>
-            <OrderCard
-              title={"Toal Earnings"}
-              // icon={<MonetizationOnIcon color="success" />}
-              amount={420}
-              stat={16}
-            />
+          <Grid size={3}>
+            <OrderCard user={"User"} />
           </Grid>
-          <Grid size={2.5}>
-            <OrderCard
-              title={"Toal Earnings"}
-              // icon={<MonetizationOnIcon color="success" />}
-              amount={420}
-              stat={16}
-            />
+          <Grid size={3}>
+            <OrderCard user={"User"} />
           </Grid>
-          <Grid size={2.5}>
-            <OrderCard
-              title={"Toal Earnings"}
-              // icon={<MonetizationOnIcon color="success" />}
-              amount={420}
-              stat={16}
-            />
+          <Grid size={3}>
+            <OrderCard user={"User"} />
           </Grid>
-          <Grid size={2.5}>
-            <OrderCard
-              title={"Toal Earnings"}
-              // icon={<MonetizationOnIcon color="success" />}
-              amount={420}
-              stat={16}
-            />
+          <Grid size={3}>
+            <OrderCard user={"User"} />
           </Grid>
-          <Grid size={2.5}>
-            <OrderCard
-              title={"Toal Earnings"}
-              // icon={<MonetizationOnIcon color="success" />}
-              amount={420}
-              stat={16}
-            />
+          <Grid size={3}>
+            <OrderCard user={"User"} />
+          </Grid>
+          <Grid size={3}>
+            <OrderCard user={"User"} />
+          </Grid>
+          <Grid size={3}>
+            <OrderCard user={"User"} />
           </Grid>
         </Grid>
       </Grid>

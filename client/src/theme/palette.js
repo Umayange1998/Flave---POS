@@ -6,7 +6,7 @@ const PRIMARY = {
 };
 
 const SECONDARY = {
-  main: "#FCBF49",
+  main: "#FFC107",
   contrastText: "#000000",
 };
 
@@ -17,6 +17,7 @@ const INFO = {
 
 const SUCCESS = {
   main: "#54D62C",
+  dark: "#229A16",
   contrastText: "#000000",
 };
 

@@ -5,6 +5,8 @@ import Home from "./pages/home/Home";
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
 import Orders from "./pages/Orders/Orders";
+import Tables from "./pages/Tables/Tables";
+import Menu from "./pages/Menu/Menu";
 
 function App() {
   return (
@@ -14,6 +16,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/orders" element={<Orders />} />
+          <Route path="/tables" element={<Tables />} />
+          <Route path="/menu" element={<Menu />} />
         </Routes>
       </div>
       <Footer />

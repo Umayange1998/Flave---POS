@@ -9,10 +9,14 @@ import LunchDiningIcon from "@mui/icons-material/LunchDining";
 import TableRestaurantIcon from "@mui/icons-material/TableRestaurant";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
+import CreateOrderModal from "../../pages/Orders/CreateOrderModal";
 
 function Footer() {
   const [value, setValue] = React.useState(0);
   const navigate = useNavigate();
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   return (
     <Box
@@ -82,6 +86,7 @@ function Footer() {
           }}
           label="Tables"
           icon={<TableRestaurantIcon />}
+          onClick={() => navigate("/tables")}
         />
         <BottomNavigationAction
           sx={{
@@ -110,6 +115,7 @@ function Footer() {
           height: 70,
           boxShadow: 3,
         }}
+        onClick={() => handleOpen()}
       >
         <LunchDiningIcon
           sx={{
@@ -118,6 +124,7 @@ function Footer() {
           }}
         />
       </Button>
+      <CreateOrderModal open={open} onClose={handleClose} />
     </Box>
   );
 }
