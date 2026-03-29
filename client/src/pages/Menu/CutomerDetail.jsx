@@ -10,8 +10,6 @@ function CutomerDetail() {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "anchor-center",
-          px: 2,
-          pt: 2,
         }}
       >
         <Box

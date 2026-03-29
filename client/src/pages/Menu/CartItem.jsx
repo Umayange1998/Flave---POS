@@ -1,6 +1,6 @@
 import { Box, Grid, Typography } from "@mui/material";
-import React from "react";
-
+import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
+import ControlPointDuplicateRoundedIcon from "@mui/icons-material/ControlPointDuplicateRounded";
 function CartItem() {
   return (
     <Grid
@@ -8,30 +8,52 @@ function CartItem() {
       spacing={0.5}
       backgroundColor={"#424242"}
       borderRadius={2}
-      padding={2}
-      minHeight={"20vh"}
-      mx={2}
+      px={2}
+      py={1}
+      minHeight={"10vh"}
     >
       <Grid
         size={12}
         sx={{
           display: "flex",
           justifyContent: "space-between",
+          flexDirection: "column",
+          gap: 1,
         }}
       >
-        <Box>
-          <Typography>name</Typography>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            width: "100%",
+          }}
+        >
+          <Typography>Club Sandwich</Typography>
+          <Typography variant="caption">x2</Typography>
         </Box>
-        <Box></Box>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            width: "100%",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: 2,
+            }}
+          >
+            <DeleteOutlineRoundedIcon />
+            <ControlPointDuplicateRoundedIcon />
+          </Box>
+          <Box>$ 11.98</Box>
+        </Box>
       </Grid>
-      <Grid
-        size={12}
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          py: 1,
-        }}
-      ></Grid>
     </Grid>
   );
 }
