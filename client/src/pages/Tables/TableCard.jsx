@@ -1,12 +1,25 @@
 import { Box, Chip, Grid, Typography } from "@mui/material";
 import React from "react";
 import { colors } from "../../Assets/colors";
+import { useDispatch } from "react-redux";
+import { updateTable } from "../../Redux/Slices/cutomerSlice";
+import { useNavigate } from "react-router-dom";
+
 function getRandomColor() {
   let num = Math.floor(Math.random() * 10);
   return colors[num];
 }
 
 function TableCard({ name, status, initial, user }) {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const handleOnclick = (name) => {
+    if (status === "Booked") return;
+    dispatch(updateTable({ tableNo: name }));
+    console.log("clicked");
+    navigate("/menu");
+  };
+
   return (
     <Grid
       container
@@ -15,6 +28,7 @@ function TableCard({ name, status, initial, user }) {
       borderRadius={2}
       padding={2}
       minHeight={"20vh"}
+      onClick={() => handleOnclick(name)}
     >
       <Grid
         size={12}
@@ -24,7 +38,7 @@ function TableCard({ name, status, initial, user }) {
         }}
       >
         <Box>
-          <Typography>{name}</Typography>
+          <Typography>Table: {name}</Typography>
         </Box>
         <Box>
           <Chip

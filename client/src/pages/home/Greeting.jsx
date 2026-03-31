@@ -22,9 +22,9 @@ function Greeting() {
 
   // Get date string with month name
   const date = now.toLocaleDateString("en-US", {
-    weekday: "short", // optional: "Mon"
+    weekday: "short",
     day: "2-digit",
-    month: "long", // Full month name
+    month: "long",
     year: "numeric",
   });
 

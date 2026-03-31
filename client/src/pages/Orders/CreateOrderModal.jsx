@@ -13,6 +13,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setCustomer } from "../../Redux/Slices/cutomerSlice";
 
 const style = {
   position: "absolute",
@@ -29,6 +31,7 @@ const style = {
 
 function CreateOrderModal({ open, onClose }) {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [guestCount, setGuestCount] = useState(0);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -58,6 +61,7 @@ function CreateOrderModal({ open, onClose }) {
 
   function handlePlaeOrder() {
     if (!validate()) return;
+    dispatch(setCustomer({ name, phone, guest: guestCount }));
     navigate("/tables");
     onClose();
   }

@@ -1,7 +1,38 @@
 import { Box, Grid, Typography } from "@mui/material";
-import React from "react";
+import { useSelector } from "react-redux";
+export const getInitials = (name) => {
+  if (!name) return "";
+
+  const words = name.trim().split(" ");
+
+  if (words.length === 1) {
+    return words[0].slice(0, 2).toUpperCase();
+  }
+
+  return (words[0][0] + words[1][0]).toUpperCase();
+};
+
+export function getFormattedDate() {
+  const now = new Date();
+  const date = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+    2,
+    "0",
+  )}-${String(now.getDate()).padStart(2, "0")}`;
+  return date;
+}
+export function getFormattedTime() {
+  const now = new Date();
+  const time = now.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+  return time;
+}
 
 function CutomerDetail() {
+  const customerDetails = useSelector((state) => state.customer);
+
   return (
     <Grid container spacing={2}>
       <Grid
@@ -19,9 +50,15 @@ function CutomerDetail() {
             alignItems: "flex-start",
           }}
         >
-          <Typography variant="body2">Couctomer Name</Typography>
-          <Typography variant="caption">#101/ Dine in</Typography>
-          <Typography variant="caption">Date, time</Typography>
+          <Typography variant="body2">
+            {customerDetails.customerName || "Customer Name"}
+          </Typography>
+          <Typography variant="caption">
+            {customerDetails.orderId || "Order Id"}/ Dine in
+          </Typography>
+          <Typography variant="caption">
+            {getFormattedDate()}, {getFormattedTime()}
+          </Typography>
         </Box>
         <Box
           backgroundColor="#F77F00"
@@ -35,7 +72,7 @@ function CutomerDetail() {
             justifyContent: "center",
           }}
         >
-          US
+          {getInitials(customerDetails.customerName) || "CN"}
         </Box>{" "}
       </Grid>
     </Grid>

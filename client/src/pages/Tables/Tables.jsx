@@ -5,21 +5,21 @@ import { Box, Button, Grid, Typography } from "@mui/material";
 import TableCard from "./TableCard";
 
 const tables = [
-  { name: "Table 01", status: "Booked", initial: "Us", user: "User" },
-  { name: "Table 02", status: "Booked", initial: "Sa", user: "User" },
-  { name: "Table 03", status: "Available", initial: "", user: " " },
-  { name: "Table 04", status: "Booked", initial: "Vi", user: "User" },
-  { name: "Table 05", status: "Available", initial: "", user: " " },
-  { name: "Table 06", status: "Booked", initial: "As", user: "User" },
-  { name: "Table 07", status: "Booked", initial: "Ma", user: "User" },
-  { name: "Table 08", status: "Booked", initial: "Da", user: "User" },
-  { name: "Table 09", status: "Booked", initial: "Us", user: "User" },
-  { name: "Table 10", status: "Booked", initial: "Sa", user: "User" },
-  { name: "Table 11", status: "Available", initial: "", user: " " },
-  { name: "Table 12", status: "Booked", initial: "Vi", user: "User" },
-  { name: "Table 13", status: "Available", initial: "", user: " " },
-  { name: "Table 14", status: "Booked", initial: "As", user: "User" },
-  { name: "Table 15", status: "Booked", initial: "Ma", user: "User" },
+  { name: "01", status: "Booked", initial: "Us", user: "User" },
+  { name: "02", status: "Booked", initial: "Sa", user: "User" },
+  { name: "03", status: "Available", initial: "", user: " " },
+  { name: "04", status: "Booked", initial: "Vi", user: "User" },
+  { name: "05", status: "Available", initial: "", user: " " },
+  { name: "06", status: "Booked", initial: "As", user: "User" },
+  { name: "07", status: "Booked", initial: "Ma", user: "User" },
+  { name: "08", status: "Booked", initial: "Da", user: "User" },
+  { name: "09", status: "Booked", initial: "Us", user: "User" },
+  { name: "10", status: "Booked", initial: "Sa", user: "User" },
+  { name: "11", status: "Available", initial: "", user: " " },
+  { name: "12", status: "Booked", initial: "Vi", user: "User" },
+  { name: "13", status: "Available", initial: "", user: " " },
+  { name: "14", status: "Booked", initial: "As", user: "User" },
+  { name: "15", status: "Booked", initial: "Ma", user: "User" },
 ];
 function Tables() {
   const [active, setActive] = React.useState("All");

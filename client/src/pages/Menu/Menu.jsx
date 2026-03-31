@@ -8,9 +8,11 @@ import { food_list } from "../../Assets/menu.js";
 import ItemCard from "./ItemCard.jsx";
 import CutomerDetail from "./CutomerDetail.jsx";
 import CartItem from "./CartItem.jsx";
+import { useSelector } from "react-redux";
 
 function Menu() {
   const [selectedCategory, setSelectedCategory] = React.useState("Mains");
+  const customerData = useSelector((state) => state.customer);
   return (
     <Grid container spacing={6} sx={{ mt: "80px", px: 5 }}>
       <Grid size={9} sx={{ display: "flex", flexDirection: "column" }}>
@@ -42,8 +44,12 @@ function Menu() {
                   alignItems: "flex-start",
                 }}
               >
-                <Typography>Costomer Name</Typography>
-                <Typography variant="caption">Table 01</Typography>
+                <Typography>
+                  {customerData.customerName || "Customer Name"}
+                </Typography>
+                <Typography variant="caption">
+                  Table No : {customerData.tableNo}
+                </Typography>
               </Box>
             </Box>
           </Grid>
