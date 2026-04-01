@@ -1,7 +1,15 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, IconButton, Typography } from "@mui/material";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import ControlPointDuplicateRoundedIcon from "@mui/icons-material/ControlPointDuplicateRounded";
-function CartItem() {
+import { useDispatch } from "react-redux";
+import {
+  addItem,
+  increaseItem,
+  removeItem,
+} from "../../Redux/Slices/cartSlice";
+
+function CartItem({ id, name, price, quantity }) {
+  const dispatch = useDispatch();
   return (
     <Grid
       container
@@ -29,8 +37,8 @@ function CartItem() {
             width: "100%",
           }}
         >
-          <Typography>Club Sandwich</Typography>
-          <Typography variant="caption">x2</Typography>
+          <Typography>{name}</Typography>
+          <Typography variant="caption">x {quantity} </Typography>
         </Box>
         <Box
           sx={{
@@ -48,10 +56,20 @@ function CartItem() {
               gap: 2,
             }}
           >
-            <DeleteOutlineRoundedIcon />
-            <ControlPointDuplicateRoundedIcon />
+            <IconButton
+              sx={{ color: "#ffffff" }}
+              onClick={() => dispatch(removeItem(id))}
+            >
+              <DeleteOutlineRoundedIcon />
+            </IconButton>
+            <IconButton
+              sx={{ color: "#ffffff" }}
+              onClick={() => dispatch(increaseItem(id))}
+            >
+              <ControlPointDuplicateRoundedIcon />
+            </IconButton>
           </Box>
-          <Box>$ 11.98</Box>
+          <Box>$ {price} </Box>
         </Box>
       </Grid>
     </Grid>

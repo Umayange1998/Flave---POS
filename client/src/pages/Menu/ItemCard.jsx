@@ -4,8 +4,9 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import { Box, Grid, IconButton, Typography } from "@mui/material";
 import AddShoppingCartRoundedIcon from "@mui/icons-material/AddShoppingCartRounded";
 
-function ItemCard({ price, name }) {
+function ItemCard({ price, name, onClick }) {
   const [itemcount, setItemcount] = useState(0);
+
   function increase() {
     if (itemcount < 6) {
       setItemcount((prev) => prev + 1);
@@ -48,6 +49,10 @@ function ItemCard({ price, name }) {
             borderRadius: 2,
             height: "30px",
             width: "30px",
+          }}
+          onClick={() => {
+            onClick(itemcount);
+            setItemcount(0);
           }}
         >
           <AddShoppingCartRoundedIcon />

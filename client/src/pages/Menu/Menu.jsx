@@ -1,5 +1,5 @@
 import { Box, Button, Divider, Grid, Typography } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import BackButton from "../../components/BackButton/BackButton";
 import LocalDiningIcon from "@mui/icons-material/LocalDining";
 import { menuList } from "../../Assets/menu.js";
@@ -8,11 +8,31 @@ import { food_list } from "../../Assets/menu.js";
 import ItemCard from "./ItemCard.jsx";
 import CutomerDetail from "./CutomerDetail.jsx";
 import CartItem from "./CartItem.jsx";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { addItem, getTotalPrice } from "../../Redux/Slices/cartSlice.js";
 
 function Menu() {
   const [selectedCategory, setSelectedCategory] = React.useState("Mains");
   const customerData = useSelector((state) => state.customer);
+  const cartData = useSelector((state) => state.cart);
+  const dispatch = useDispatch();
+  const total = useSelector(getTotalPrice);
+
+  function handleAddToCarty(item, quantity) {
+    if (quantity === 0) {
+      return;
+    } else {
+      const { name, price } = item;
+      const newObj = {
+        id: new Date(),
+        name,
+        pricePerQnt: price,
+        quantity: quantity,
+        price: price * quantity,
+      };
+      dispatch(addItem(newObj));
+    }
+  }
   return (
     <Grid container spacing={6} sx={{ mt: "80px", px: 5 }}>
       <Grid size={9} sx={{ display: "flex", flexDirection: "column" }}>
@@ -104,7 +124,12 @@ function Menu() {
               .map((item) => {
                 return (
                   <Grid size={3} key={item.menu_name}>
-                    <ItemCard name={item.name} price={item.price} />
+                    <ItemCard
+                      key={item.id}
+                      name={item.name}
+                      price={item.price}
+                      onClick={(count) => handleAddToCarty(item, count)}
+                    />
                   </Grid>
                 );
               })}
@@ -142,8 +167,21 @@ function Menu() {
                 pb: 1,
               }}
             >
-              <CartItem />
-              <CartItem />
+              {cartData.length === 0 ? (
+                <Typography variant="caption">Cart is Empty</Typography>
+              ) : (
+                cartData.map((item) => {
+                  return (
+                    <CartItem
+                      key={item.id}
+                      id={item.id}
+                      name={item.name}
+                      price={item.price}
+                      quantity={item.quantity}
+                    />
+                  );
+                })
+              )}
             </Box>
           </Grid>
           <Divider
@@ -155,14 +193,18 @@ function Menu() {
             }}
           />
           <Grid size={12}>
-            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-              <Typography variant="caption">Items(4)</Typography>
-              <Typography>$ 23.96</Typography>
+            <Box
+              sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}
+            >
+              <Typography variant="caption">
+                Items({cartData.length})
+              </Typography>
+              <Typography>$ {total}</Typography>
             </Box>
-            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            {/* <Box sx={{ display: "flex", justifyContent: "space-between" }}>
               <Typography variant="caption">Tax(18%)</Typography>
               <Typography variant="boddy2">$ 4.31</Typography>
-            </Box>
+            </Box> */}
             <Box>
               <Grid container spacing={2}>
                 <Grid size={6}>
