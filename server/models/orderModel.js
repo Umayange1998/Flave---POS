@@ -31,6 +31,7 @@ const orderSchema = new mongoose.Schema(
       },
     },
     items: [],
+    table: { type: mongoose.Schema.Types.ObjectId, ref: "Order" },
   },
   { timestamps: true },
 );

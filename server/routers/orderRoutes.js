@@ -1,10 +1,11 @@
 import express from "express";
 import createHttpError from "http-errors";
-import jwt from "jsonwebtoken";
 import { tokenVerification } from "../middleware/tokenVerification.js";
 import orderModel from "../models/orderModel.js";
+import mongoose from "mongoose";
 
 const router = express.Router();
+router.use(tokenVerification);
 
 router.post("/addorder", async (req, res, next) => {
   try {
@@ -23,7 +24,12 @@ router.post("/addorder", async (req, res, next) => {
 //////////////////////get order///////////////
 router.get("/getorder/:id", async (req, res, next) => {
   try {
-    const order = await orderModel.findById(req.params.id);
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      const error = createHttpError(404, "Invalid Id");
+      return next(error);
+    }
+    const order = await orderModel.findById(id);
     if (!order) {
       const error = createHttpError(404, "Order not found!");
       return next(error);
@@ -50,8 +56,14 @@ router.get("/getall", async (req, res, next) => {
 router.put("/update/:id", async (req, res, next) => {
   try {
     const { orderStatus } = req.body;
+
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      const error = createHttpError(404, "Invalid Id");
+      return next(error);
+    }
     const order = await orderModel.findByIdAndUpdate(
-      req.params.id,
+      id,
       { orderStatus },
       { new: true },
     );

@@ -13,9 +13,11 @@ app.use(express.json());
 
 import userRouter from "./routers/userRoute.js";
 import orderRoter from "./routers/orderRoutes.js";
+import tableRoter from "./routers/tableRoutes.js";
 
 app.use("/user", userRouter);
 app.use("/orders", orderRoter);
+app.use("/tables", tableRoter);
 
 //Global Error Handler
 app.use(globalErrorHandler);
