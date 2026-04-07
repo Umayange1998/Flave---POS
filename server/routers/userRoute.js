@@ -46,10 +46,12 @@ router.post("/register", async (req, res, next) => {
     await newUser.save();
     const token = accessToken(newUser._id);
 
-    res
-      .status(201)
-      .json({ success: true, token, message: "User registered successfully" });
-    toast.success("Registered successfully! Welcome to Flave--POS.");
+    res.status(201).json({
+      success: true,
+      token,
+      data: newUser,
+      message: "User registered successfully",
+    });
   } catch (error) {
     next(error);
   }
@@ -78,7 +80,12 @@ router.post("/login", async (req, res, next) => {
     }
     const token = accessToken(isUserExist._id);
 
-    res.status(200).json({ success: true, token, message: "Login successful" });
+    res.status(200).json({
+      success: true,
+      data: isUserExist,
+      token,
+      message: "Login successful",
+    });
   } catch (error) {
     next(error);
   }

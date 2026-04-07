@@ -16,6 +16,11 @@ import MailIcon from "@mui/icons-material/Mail";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import Button from "@mui/material/Button";
+import { useDispatch, useSelector } from "react-redux";
+import LogoutIcon from "@mui/icons-material/Logout";
+import { Tooltip } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { removeUser } from "../../Redux/Slices/userSlice";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -58,6 +63,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 function Header() {
+  const useradata = useSelector((state) => state.user);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
@@ -79,6 +85,13 @@ function Header() {
 
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
+  };
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const logout = () => {
+    localStorage.removeItem("token");
+    dispatch(removeUser());
+    navigate("/auth");
   };
 
   const menuId = "primary-search-account-menu";
@@ -205,6 +218,7 @@ function Header() {
               },
               justifyContent: "space-between",
               gap: 2,
+              alignItems: "center",
             }}
           >
             <IconButton
@@ -231,10 +245,33 @@ function Header() {
               <AccountCircle
                 sx={{
                   mr: 2,
+                  width: 40,
+                  height: 40,
                 }}
               />
-              User
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <Typography variant="body"> {useradata.name}</Typography>
+                <Typography variant="caption">{useradata.role}</Typography>
+              </Box>
             </Button>
+            <Tooltip title="Logout" arrow>
+              <IconButton
+                color="inherit"
+                sx={{
+                  cursor: "pointer",
+                }}
+                onClick={() => logout()}
+              >
+                <LogoutIcon x={{ width: 60, height: 60 }} />
+              </IconButton>
+            </Tooltip>
           </Box>
           <Box sx={{ display: { xs: "flex", md: "none" } }}>
             <IconButton

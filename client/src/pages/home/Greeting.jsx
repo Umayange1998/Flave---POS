@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
+import { useSelector } from "react-redux";
 
 function Greeting() {
+  const useradata = useSelector((state) => state.user);
   const [now, setNow] = useState(new Date());
 
   // Update the time every second
@@ -29,10 +31,10 @@ function Greeting() {
   });
 
   const hour = now.getHours();
-  let greeting = "Good Morning";
+  let greeting = `Good Morning ${useradata.name}!`;
 
-  if (hour >= 12 && hour < 18) greeting = "Good Afternoon";
-  else if (hour >= 18) greeting = "Good Evening";
+  if (hour >= 12 && hour < 18) greeting = `Good Afternoon ${useradata.name}!`;
+  else if (hour >= 18) greeting = `Good Evening ${useradata.name}!`;
   return (
     <Box
       sx={{

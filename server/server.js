@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import { connectDB } from "./config/connectDB.js";
 import { globalErrorHandler } from "./middleware/globalErrorHandler.js";
+import cors from "cors";
 dotenv.config();
 
 const app = express();
@@ -10,6 +11,11 @@ const PORT = process.env.PORT;
 
 connectDB();
 app.use(express.json());
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+  }),
+);
 
 import userRouter from "./routers/userRoute.js";
 import orderRoter from "./routers/orderRoutes.js";

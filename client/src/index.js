@@ -8,6 +8,15 @@ import CssBaseline from "@mui/material/CssBaseline";
 import palette from "./theme/palette";
 import store from "./Redux/store";
 import { Provider } from "react-redux";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 30000,
+    },
+  },
+});
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -17,7 +26,9 @@ root.render(
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Provider store={store}>
-        <App />
+        <QueryClientProvider client={queryClient}>
+          <App />
+        </QueryClientProvider>
       </Provider>
     </ThemeProvider>
   </BrowserRouter>,

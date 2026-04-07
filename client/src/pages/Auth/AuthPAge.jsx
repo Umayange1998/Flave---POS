@@ -13,6 +13,13 @@ import { flex, keyframes } from "@mui/system";
 import restaurant from "../../Assets/restaurant.jpg";
 import { useState } from "react";
 import LocalDiningIcon from "@mui/icons-material/LocalDining";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../Redux/Slices/userSlice";
+import { useNavigate } from "react-router-dom";
+
 function AuthPAge() {
   const fadeIn = keyframes`
   from {
@@ -31,6 +38,9 @@ function AuthPAge() {
   const [fullNameError, setFullNameError] = useState("");
   const [phoneError, setPhoneError] = useState("");
   const baseURL = process.env.REACT_APP_BASE_URL;
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [data, setData] = useState({
     name: "",
     email: "",
@@ -71,10 +81,56 @@ function AuthPAge() {
     setData({ ...data, role: selectedRole });
   };
 
-  const handleSubmit = (event) => {
+  const onLoginHandler = (event) => {
     event.preventDefault();
-    console.log(data);
+    loginMutation.mutate(data);
   };
+  const onRegisterHandler = (event) => {
+    event.preventDefault();
+    registerMutation.mutate(data);
+  };
+
+  const registerMutation = useMutation({
+    mutationFn: (reqData) => axios.post(`${baseURL}/user/register`, reqData),
+    onSuccess: (res) => {
+      const { data } = res;
+      console.log(data);
+      setData({
+        name: "",
+        email: "",
+        password: "",
+        phone: "",
+        role: "",
+      });
+      toast.success("Registration successful");
+      setTimeout(() => {
+        setIsSignIn(true);
+      }, 1500);
+    },
+    onError: (error) => {
+      console.log(error);
+      const message = error.response?.data?.message || error.message;
+      toast.error(message);
+    },
+  });
+
+  const loginMutation = useMutation({
+    mutationFn: (reqData) => axios.post(`${baseURL}/user/login`, reqData),
+    onSuccess: (res) => {
+      const { data } = res;
+      localStorage.setItem("token", data.token);
+      console.log(data);
+      const { _id, name, phone, email, role } = data.data;
+      dispatch(setUser({ _id, name, phone, email, role }));
+      toast.success("Login successful");
+      navigate("/");
+    },
+    onError: (error) => {
+      console.log(error);
+      const message = error.response?.data?.message || error.message;
+      toast.error(message);
+    },
+  });
 
   return (
     <Grid container spacing={2}>
@@ -259,7 +315,7 @@ function AuthPAge() {
                   size="small"
                   placeholder="Phone"
                   onChange={onChangeHandler}
-                  name="Phone"
+                  name="phone"
                   value={data.phone}
                   fullWidth
                   error={!!phoneError}
@@ -337,7 +393,7 @@ function AuthPAge() {
                   py: 1.5,
                   background: "linear-gradient(135deg, #ff7a18, #ff9f1c)",
                 }}
-                onClick={handleSubmit}
+                onClick={isSignIn ? onLoginHandler : onRegisterHandler}
               >
                 {isSignIn ? "Sign In" : "Create Account"}
               </Button>
