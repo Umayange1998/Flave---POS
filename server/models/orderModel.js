@@ -31,9 +31,9 @@ const orderSchema = new mongoose.Schema(
       },
     },
     items: [],
-    table: { type: mongoose.Schema.Types.ObjectId, ref: "Order" },
+    table: { type: mongoose.Schema.Types.ObjectId, ref: "table" },
   },
   { timestamps: true },
 );
-const orderModel = mongoose.model("order", orderSchema);
+const orderModel = mongoose.model("Order", orderSchema);
 export default orderModel;

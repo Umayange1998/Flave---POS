@@ -10,9 +10,13 @@ router.use(tokenVerification);
 //////////////
 router.post("/addtable", async (req, res, next) => {
   try {
-    const { tableNo } = req.body;
+    const { tableNo, seats } = req.body;
     if (!tableNo) {
       const error = createHttpError(400, "Please provide table No!");
+      return next(error);
+    }
+    if (!seats) {
+      const error = createHttpError(400, "Please provide Number of seats!");
       return next(error);
     }
     const isTablePresent = await tableModel.findOne({ tableNo });
@@ -21,7 +25,7 @@ router.post("/addtable", async (req, res, next) => {
       const error = createHttpError(400, "Table already exists");
       return next(error);
     }
-    const newTable = new tableModel({ tableNo });
+    const newTable = new tableModel({ tableNo, seats });
     await newTable.save();
     res
       .status(201)
@@ -33,7 +37,10 @@ router.post("/addtable", async (req, res, next) => {
 
 router.get("/getall", async (req, res, next) => {
   try {
-    const tables = await tableModel.find();
+    const tables = await tableModel.find().populate({
+      path: "currentOrder",
+      select: "customerDetails",
+    });
     res.status(200).json({ success: true, data: tables });
   } catch (error) {
     next(error);

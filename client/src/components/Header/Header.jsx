@@ -21,6 +21,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import { Tooltip } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { removeUser } from "../../Redux/Slices/userSlice";
+import DashboardIcon from "@mui/icons-material/Dashboard";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -63,7 +64,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 function Header() {
-  const useradata = useSelector((state) => state.user);
+  const userdata = useSelector((state) => state.user);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
@@ -196,7 +197,12 @@ function Header() {
             variant="h6"
             noWrap
             component="div"
-            sx={{ display: { xs: "none", sm: "block" }, ml: { md: 10 } }}
+            sx={{
+              display: { xs: "none", sm: "block" },
+              ml: { md: 10 },
+              cursor: "pointer",
+            }}
+            onClick={() => navigate("/")}
           >
             Flave.
           </Typography>
@@ -221,13 +227,34 @@ function Header() {
               alignItems: "center",
             }}
           >
+            {userdata.role === "Admin" && (
+              <IconButton
+                onClick={() => navigate("/dashboard")}
+                size="large"
+                color="inherit"
+              >
+                <DashboardIcon
+                  sx={{
+                    // mr: 2,
+                    width: 30,
+                    height: 30,
+                  }}
+                />
+              </IconButton>
+            )}
             <IconButton
               size="large"
               aria-label="show 17 new notifications"
               color="inherit"
             >
               <Badge badgeContent={17} color="error">
-                <NotificationsIcon />
+                <NotificationsIcon
+                  sx={{
+                    // mr: 2,
+                    width: 30,
+                    height: 30,
+                  }}
+                />
               </Badge>
             </IconButton>
             <Button
@@ -257,8 +284,8 @@ function Header() {
                   alignItems: "center",
                 }}
               >
-                <Typography variant="body"> {useradata.name}</Typography>
-                <Typography variant="caption">{useradata.role}</Typography>
+                <Typography variant="body"> {userdata.name}</Typography>
+                <Typography variant="caption">{userdata.role}</Typography>
               </Box>
             </Button>
             <Tooltip title="Logout" arrow>

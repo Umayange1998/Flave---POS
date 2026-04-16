@@ -12,6 +12,8 @@ import { ToastContainer, toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import useLoadData from "./hooks/useLoadData";
 import FullScreenLoader from "./components/FullScreenLoader/FullScreenLoader";
+import Dashboard from "./pages/Dashboard/Dashboard";
+import Veryfy from "./pages/Verify/Verify";
 
 function Layout() {
   const location = useLocation();
@@ -58,6 +60,22 @@ function Layout() {
           element={
             <ProtectedRoutes>
               <Menu />
+            </ProtectedRoutes>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoutes>
+              <Dashboard />
+            </ProtectedRoutes>
+          }
+        />
+        <Route
+          path="/verify-payment"
+          element={
+            <ProtectedRoutes>
+              <Veryfy />
             </ProtectedRoutes>
           }
         />

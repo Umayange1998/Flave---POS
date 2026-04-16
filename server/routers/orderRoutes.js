@@ -3,8 +3,13 @@ import createHttpError from "http-errors";
 import { tokenVerification } from "../middleware/tokenVerification.js";
 import orderModel from "../models/orderModel.js";
 import mongoose from "mongoose";
+import Stripe from "stripe";
+import dotenv from "dotenv";
+dotenv.config();
 
 const router = express.Router();
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
 router.use(tokenVerification);
 
 router.post("/addorder", async (req, res, next) => {

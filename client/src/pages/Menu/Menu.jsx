@@ -10,15 +10,23 @@ import CutomerDetail from "./CutomerDetail.jsx";
 import CartItem from "./CartItem.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { addItem, getTotalPrice } from "../../Redux/Slices/cartSlice.js";
+import { toast } from "react-toastify";
+import axios from "axios";
+import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 function Menu() {
-  const [selectedCategory, setSelectedCategory] = React.useState("Mains");
+  const [selectedCategory, setSelectedCategory] = useState("Mains");
+  const [paymentMethod, setPaymentMethod] = useState("");
   const customerData = useSelector((state) => state.customer);
   const cartData = useSelector((state) => state.cart);
   const dispatch = useDispatch();
   const total = useSelector(getTotalPrice);
+  const navigate = useNavigate();
 
-  function handleAddToCarty(item, quantity) {
+  const baseURL = process.env.REACT_APP_BASE_URL;
+
+  function handleAddToCart(item, quantity) {
     if (quantity === 0) {
       return;
     } else {
@@ -28,11 +36,86 @@ function Menu() {
         name,
         pricePerQnt: price,
         quantity: quantity,
-        price: price * quantity,
       };
       dispatch(addItem(newObj));
     }
   }
+
+  const useCreateOrder = (baseURL, token) => {
+    return useMutation({
+      mutationFn: async (orderData) => {
+        const res = await axios.post(`${baseURL}/orders/addorder`, orderData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        return res.data.data; // return order
+      },
+    });
+  };
+  const useCreatePayment = (baseURL) => {
+    return useMutation({
+      mutationFn: async (paymentData) => {
+        const res = await axios.post(`${baseURL}/payment/place`, paymentData);
+        return res.data;
+      },
+    });
+  };
+  const token = localStorage.getItem("token");
+
+  const createOrderMutation = useCreateOrder(baseURL, token);
+  const createPaymentMutation = useCreatePayment(baseURL);
+
+  const handlePlaceOrder = async () => {
+    try {
+      console.log("Customer Data:", customerData);
+      if (!paymentMethod) {
+        toast.error("Select payment method");
+        return;
+      }
+
+      // 🧾 1. CREATE ORDER FIRST
+      const orderData = {
+        customerDetails: {
+          name: customerData.customerName,
+          phone: customerData.customerPhone,
+          guests: customerData.guests,
+        },
+        orderStatus: "pending",
+        bills: {
+          total: total,
+        },
+        items: cartData,
+        table: customerData.tableId,
+      };
+
+      const order = await createOrderMutation.mutateAsync(orderData);
+
+      const orderId = order._id;
+
+      // 💵 2. CASH FLOW
+      if (paymentMethod === "cash") {
+        toast.success("Order placed (Cash)");
+        navigate("/orders");
+        console.log("Order ID:", orderId);
+        return;
+      }
+
+      // 💳 3. ONLINE (Stripe)
+      const paymentRes = await createPaymentMutation.mutateAsync({
+        orderId,
+        amount: total,
+        customerEmail: customerData.email,
+      });
+
+      if (paymentRes.sessionUrl) {
+        window.location.href = paymentRes.sessionUrl;
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error("Order failed");
+    }
+  };
   return (
     <Grid container spacing={6} sx={{ mt: "80px", px: 5 }}>
       <Grid size={9} sx={{ display: "flex", flexDirection: "column" }}>
@@ -128,7 +211,7 @@ function Menu() {
                       key={item.id}
                       name={item.name}
                       price={item.price}
-                      onClick={(count) => handleAddToCarty(item, count)}
+                      onClick={(count) => handleAddToCart(item, count)}
                     />
                   </Grid>
                 );
@@ -176,7 +259,7 @@ function Menu() {
                       key={item.id}
                       id={item.id}
                       name={item.name}
-                      price={item.price}
+                      price={item.pricePerQnt * item.quantity}
                       quantity={item.quantity}
                     />
                   );
@@ -208,13 +291,31 @@ function Menu() {
             <Box>
               <Grid container spacing={2}>
                 <Grid size={6}>
-                  <Button variant="contained" color="#ffffff" fullWidth>
+                  <Button
+                    variant="contained"
+                    sx={{
+                      background:
+                        paymentMethod === "cash" ? "#54D62C" : "#1f1f1f",
+                      color: "#ffffff",
+                    }}
+                    fullWidth
+                    onClick={() => setPaymentMethod("cash")}
+                  >
                     Cash
                   </Button>
                 </Grid>
                 <Grid size={6}>
-                  <Button variant="contained" color="#ffffff" fullWidth>
-                    Card
+                  <Button
+                    variant="contained"
+                    sx={{
+                      background:
+                        paymentMethod === "online" ? "#54D62C" : "#1f1f1f",
+                      color: "#ffffff",
+                    }}
+                    fullWidth
+                    onClick={() => setPaymentMethod("online")}
+                  >
+                    Online
                   </Button>
                 </Grid>
                 <Grid size={6}>
@@ -224,7 +325,12 @@ function Menu() {
                   </Button>
                 </Grid>
                 <Grid size={6}>
-                  <Button variant="contained" color="secondary" fullWidth>
+                  <Button
+                    onClick={() => handlePlaceOrder()}
+                    variant="contained"
+                    color="secondary"
+                    fullWidth
+                  >
                     Place Order
                   </Button>
                 </Grid>

@@ -61,7 +61,7 @@ function CreateOrderModal({ open, onClose }) {
 
   function handlePlaeOrder() {
     if (!validate()) return;
-    dispatch(setCustomer({ name, phone, guest: guestCount }));
+    dispatch(setCustomer({ name, phone, guests: guestCount }));
     navigate("/tables");
     onClose();
   }

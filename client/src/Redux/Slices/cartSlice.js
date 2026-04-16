@@ -11,7 +11,6 @@ const cartSlice = createSlice({
 
       if (existing) {
         existing.quantity += action.payload.quantity;
-        existing.price += action.payload.price;
       } else {
         state.push(action.payload);
       }
@@ -21,7 +20,6 @@ const cartSlice = createSlice({
 
       if (item) {
         item.quantity += 1;
-        item.price += item.pricePerQnt;
       }
     },
 
@@ -32,8 +30,6 @@ const cartSlice = createSlice({
         const item = state[index];
 
         item.quantity -= 1;
-        item.price -= item.pricePerQnt;
-
         if (item.quantity <= 0) {
           state.splice(index, 1);
         }
@@ -43,7 +39,10 @@ const cartSlice = createSlice({
 });
 
 export const getTotalPrice = (state) =>
-  state.cart.reduce((total, item) => total + item.price, 0);
+  state.cart.reduce(
+    (total, item) => total + item.pricePerQnt * item.quantity,
+    0,
+  );
 export const { addItem, decreaseItem, removeItem, increaseItem } =
   cartSlice.actions;
 export default cartSlice.reducer;

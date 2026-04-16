@@ -20,10 +20,12 @@ app.use(
 import userRouter from "./routers/userRoute.js";
 import orderRoter from "./routers/orderRoutes.js";
 import tableRoter from "./routers/tableRoutes.js";
+import paymentRouter from "./routers/paymentRoutes.js";
 
 app.use("/user", userRouter);
 app.use("/orders", orderRoter);
 app.use("/tables", tableRoter);
+app.use("/payment", paymentRouter);
 
 //Global Error Handler
 app.use(globalErrorHandler);

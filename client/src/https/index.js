@@ -20,3 +20,4 @@ api.interceptors.request.use((config) => {
 
 export default api;
 export const getUserData = () => api.get("/user/getUser");
+export const getTables = () => api.get("/tables/getall");
