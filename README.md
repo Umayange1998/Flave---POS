@@ -3,6 +3,7 @@
 A modern Restaurant Point of Sale (POS) system built with React, Node.js, MongoDB, and Stripe.
 Supports cash, card (manual), and QR-based online payments with real-time status updates.
 
+
 🚀 Features
 🧾 Order Management
 
@@ -13,6 +14,7 @@ Track order status (Preparing / Ready)
 View recent and all orders
 
 Auto-sort latest orders first
+
 
 
 💳 Payment Options
@@ -30,6 +32,7 @@ Live payment status (pending → paid)
 Auto UI refresh using React Query
 
 Stripe webhook integration
+
 
 
 🪑 Table Management
