@@ -1,3 +1,13 @@
+import Cheese_pizza from "./Cheese_pizza.webp";
+import Club_Sandwich from "./Club_Sandwich.jpg";
+import Chicken_Burger from "./Chicken_Burger.jpg";
+import Special_Salad from "./Special_Salad.jpg";
+import Chicken_Mushroom_Soup from "./Chicken_Mushroom_Soup.jpg";
+import BBQ_Chicken from "./BBQ_Chicken.jpg";
+import Chicken_Cheese_Kottu from "./Chicken_Cheese_Kottu.jpg";
+import Chicken_Pasta from "./Chicken_Pasta.jpeg";
+import Chicken_Fried_Noodles from "./Chicken_Fried_Noodles.jpg";
+
 export const menuList = [
   {
     menu_name: "Mains",
@@ -53,6 +63,82 @@ export const menuList = [
     menu_name: "Soft Drinks",
     category: "Soft_Drinks",
     menu_imoji: "🥤",
+  },
+];
+export const popular_dishes = [
+  {
+    _id: 1,
+    name: "Chicken Pasta With White Sauce",
+    category: "Pasta_and_Spaghetti",
+    price: 9.49,
+    image: Chicken_Pasta,
+    description: "Creamy chicken pasta with white sauce.",
+  },
+
+  {
+    _id: 2,
+    name: "Cheese pizza",
+    category: "Pizza",
+    price: 7.99,
+    image: Cheese_pizza,
+    description: "Juicy grilled chicken burger with lettuce, tomato, and mayo.",
+  },
+  {
+    _id: 3,
+    name: "Club Sandwich",
+    category: "Mains",
+    price: 5.99,
+    image: Club_Sandwich,
+    description:
+      "A delicious club sandwich with layers of turkey, bacon, lettuce, and tomato.",
+  },
+  {
+    _id: 4,
+    name: "Chicken Burger with Fries",
+    category: "Mains",
+    price: 6.99,
+    image: Chicken_Burger,
+    description: "Delicious chicken burger served with a side of fries.",
+  },
+  {
+    _id: 5,
+    name: "Flave Special Salad",
+    category: "Salads",
+    price: 6.99,
+    image: Special_Salad,
+    description: "A fresh and flavorful Flave special mixed salad.",
+  },
+  {
+    _id: 6,
+    name: "Chicken And Mushroom Soup",
+    category: "Soups",
+    price: 5.99,
+    image: Chicken_Mushroom_Soup,
+    description: "Creamy soup with chicken and mushrooms.",
+  },
+  {
+    _id: 7,
+    name: "BBQ Chicken With Chips",
+    category: "Chicken",
+    price: 9.99,
+    image: BBQ_Chicken,
+    description: "Barbecue chicken served with chips.",
+  },
+  {
+    _id: 8,
+    name: "Chicken Fried Noodles",
+    category: "Fried_Noodles",
+    price: 8.49,
+    image: Chicken_Fried_Noodles,
+    description: "Fried noodles with chicken and vegetables.",
+  },
+  {
+    _id: 9,
+    name: "Chicken And Cheese Kottu",
+    category: "Kottu",
+    price: 9.99,
+    image: Chicken_Cheese_Kottu,
+    description: "Chicken kottu with melted cheese.",
   },
 ];
 

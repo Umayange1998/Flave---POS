@@ -3,7 +3,7 @@ import { Box, Typography } from "@mui/material";
 
 function Minicard({ title, icon, amount, stat }) {
   return (
-    <Box sx={{ background: "#262626", borderRadius: 2, p: 2 }}>
+    <Box height={"100%"} sx={{ background: "#262626", borderRadius: 2, p: 2 }}>
       <Box
         sx={{
           display: "flex",
@@ -30,7 +30,11 @@ function Minicard({ title, icon, amount, stat }) {
           }}
         >
           <Typography>
-            <span style={{ color: "#54D62C" }}>{stat}%</span> than yesterday
+            {stat && (
+              <>
+                <span style={{ color: "#54D62C" }}>{stat}%</span> than yesterday
+              </>
+            )}
           </Typography>
         </Box>
       </Box>

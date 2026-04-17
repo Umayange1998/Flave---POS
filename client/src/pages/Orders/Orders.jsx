@@ -2,12 +2,28 @@ import React from "react";
 import { Box, Button, Grid, Typography } from "@mui/material";
 import OrderCard from "./OrderCard";
 import BackButton from "../../components/BackButton/BackButton";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { getAllOrders } from "../../https";
+import { toast } from "react-toastify";
 
 function Order() {
   const [active, setActive] = React.useState("All");
   function handleFilter(value) {
     setActive(value);
   }
+  const { data: resData, isError } = useQuery({
+    queryKey: ["orders"],
+    queryFn: async () => {
+      return await getAllOrders();
+    },
+    placeholderData: keepPreviousData,
+  });
+  if (isError) {
+    toast.error("Something went Wrong");
+  }
+  const orders = resData?.data?.data
+    ?.slice() // avoid mutating original
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   return (
     <Grid container spacing={2} sx={{ mt: "80px" }}>
@@ -95,27 +111,18 @@ function Order() {
           spacing={2}
           sx={{ display: "flex", justifyContent: "flex-start", mx: 5 }}
         >
-          <Grid size={3}>
-            <OrderCard user={"User"} />
-          </Grid>
-          <Grid size={3}>
-            <OrderCard user={"User"} />
-          </Grid>
-          <Grid size={3}>
-            <OrderCard user={"User"} />
-          </Grid>
-          <Grid size={3}>
-            <OrderCard user={"User"} />
-          </Grid>
-          <Grid size={3}>
-            <OrderCard user={"User"} />
-          </Grid>
-          <Grid size={3}>
-            <OrderCard user={"User"} />
-          </Grid>
-          <Grid size={3}>
-            <OrderCard user={"User"} />
-          </Grid>
+          {console.log(resData)}
+          {orders ? (
+            orders.map((order, index) => {
+              return (
+                <Grid size={3}>
+                  <OrderCard key={order._id} order={order} index={index} />
+                </Grid>
+              );
+            })
+          ) : (
+            <Typography>No order available</Typography>
+          )}
         </Grid>
       </Grid>
     </Grid>

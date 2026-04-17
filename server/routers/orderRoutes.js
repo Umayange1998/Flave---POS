@@ -49,7 +49,10 @@ router.get("/getorder/:id", async (req, res, next) => {
 
 router.get("/getall", async (req, res, next) => {
   try {
-    const orders = await orderModel.find();
+    const orders = await orderModel.find().populate({
+      path: "table",
+      select: "tableNo",
+    });
     res.status(200).json({ data: orders });
   } catch (error) {
     next(error);

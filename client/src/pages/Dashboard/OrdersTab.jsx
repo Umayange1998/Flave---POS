@@ -11,11 +11,64 @@ import {
   TableRow,
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
-import { orders } from "../../Assets/orders";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
+import { getAllOrders, updateOrder } from "../../https";
+import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import { useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 
-function TabThree() {
-  const handleStatusChange = () => {};
+function OrderTab() {
+  const queryClient = useQueryClient();
+  const [orderStatus, setOrderStatus] = useState({});
+
+  const { data: resData, isError } = useQuery({
+    queryKey: ["orders"],
+    queryFn: async () => {
+      return await getAllOrders();
+    },
+    placeholderData: keepPreviousData,
+  });
+  if (isError) {
+    toast.error("Something went Wrong");
+  }
+  const orders = resData?.data?.data
+    ?.slice() // avoid mutating original
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const updateOrderMutation = useMutation({
+    mutationFn: (reqData) => updateOrder(reqData),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["orders"]);
+    },
+    onError: () => {
+      toast.error("Update failed");
+    },
+  });
+
+  const handleRefreshUpdate = (orderId) => {
+    const newStatus =
+      orderStatus[orderId] ??
+      orders.find((o) => o._id === orderId)?.orderStatus;
+
+    updateOrderMutation.mutate(
+      {
+        orderId,
+        orderStatus: newStatus,
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries(["orders"]);
+        },
+      },
+    );
+  };
+
+  const handleStatusChange = (orderId, newStatus) => {
+    setOrderStatus((prev) => ({
+      ...prev,
+      [orderId]: newStatus,
+    }));
+  };
 
   return (
     <Grid container spacing={2}>
@@ -35,88 +88,97 @@ function TabThree() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {orders.map((order, index) => (
-                <TableRow
-                  key={index}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row">
-                    {order.id}
-                  </TableCell>
-                  <TableCell align="center">{order.customer}</TableCell>
-                  <TableCell align="center">
-                    {" "}
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      value={order.status}
-                      size="small"
-                      onChange={(e) =>
-                        handleStatusChange(index, e.target.value)
-                      }
-                      MenuProps={{
-                        PaperProps: {
-                          sx: {
-                            backgroundColor: "#262626",
+              {orders?.map((order, index) => {
+                const currentStatus =
+                  orderStatus[order._id] ?? order.orderStatus;
+                return (
+                  <TableRow
+                    key={index}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell component="th" scope="row">
+                      #10{index}
+                    </TableCell>
+                    <TableCell align="center">
+                      {order.customerDetails.name}
+                    </TableCell>
+                    <TableCell align="center">
+                      {" "}
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={orderStatus[order._id] ?? order.orderStatus}
+                        size="small"
+                        onChange={(e) =>
+                          handleStatusChange(order._id, e.target.value)
+                        }
+                        MenuProps={{
+                          PaperProps: {
+                            sx: {
+                              backgroundColor: "#262626",
+                            },
                           },
-                        },
-                      }}
-                      sx={{
-                        width: "80%",
-                        color:
-                          order.status === "Ready"
-                            ? "success.main"
-                            : "secondary.main",
-
-                        "& .MuiOutlinedInput-notchedOutline": {
-                          borderColor:
-                            order.status === "Ready"
+                        }}
+                        sx={{
+                          width: "80%",
+                          color:
+                            currentStatus === "Ready"
                               ? "success.main"
                               : "secondary.main",
-                        },
 
-                        "&:hover .MuiOutlinedInput-notchedOutline": {
-                          borderColor:
-                            order.status === "Ready"
-                              ? "success.main"
-                              : "secondary.main",
-                        },
+                          "& .MuiOutlinedInput-notchedOutline": {
+                            borderColor:
+                              currentStatus === "Ready"
+                                ? "success.main"
+                                : "secondary.main",
+                          },
 
-                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                          borderColor:
-                            order.status === "Ready"
-                              ? "success.main"
-                              : "secondary.main",
-                        },
-                      }}
-                    >
-                      <MenuItem
-                        sx={{ color: "#54D62C", background: "#262626" }}
-                        value={"InProgress"}
+                          "&:hover .MuiOutlinedInput-notchedOutline": {
+                            borderColor:
+                              currentStatus === "Ready"
+                                ? "success.main"
+                                : "secondary.main",
+                          },
+
+                          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                            borderColor:
+                              currentStatus === "Ready"
+                                ? "success.main"
+                                : "secondary.main",
+                          },
+                        }}
                       >
-                        In Progress
-                      </MenuItem>
-                      <MenuItem
-                        sx={{ color: "#FFC107", background: "#262626" }}
-                        value={"Ready"}
+                        <MenuItem
+                          sx={{ color: "#FFC107", background: "#262626" }}
+                          value={"preparing"}
+                        >
+                          preparing
+                        </MenuItem>
+                        <MenuItem
+                          sx={{ color: "#54D62C", background: "#262626" }}
+                          value={"Ready"}
+                        >
+                          Ready
+                        </MenuItem>
+                      </Select>
+                    </TableCell>
+                    <TableCell align="center">{order.orderDate}</TableCell>
+                    <TableCell align="center">{order.items.length} </TableCell>
+                    <TableCell align="center">
+                      Table- {order.table?.tableNo || "N/A"}
+                    </TableCell>
+                    <TableCell align="center">$ {order.bills.total}</TableCell>
+                    <TableCell>
+                      <IconButton
+                        onClick={() => handleRefreshUpdate(order._id)}
+                        sx={{ color: "info.main" }}
                       >
-                        Ready
-                      </MenuItem>
-                    </Select>
-                  </TableCell>
-                  <TableCell align="center">{order.dateTime}</TableCell>
-                  <TableCell align="center">{order.items}</TableCell>
-                  <TableCell align="center">Table- {order.tableNo}</TableCell>
-                  <TableCell align="center">
-                    ${order.total.toFixed(2)}
-                  </TableCell>
-                  <TableCell>
-                    <IconButton sx={{ color: "info.main" }}>
-                      <AutorenewIcon />{" "}
-                    </IconButton>{" "}
-                  </TableCell>
-                </TableRow>
-              ))}
+                        <AutorenewIcon />{" "}
+                      </IconButton>{" "}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </TableContainer>
@@ -125,4 +187,4 @@ function TabThree() {
   );
 }
 
-export default TabThree;
+export default OrderTab;

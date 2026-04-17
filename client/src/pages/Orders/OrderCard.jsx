@@ -1,9 +1,28 @@
 import React from "react";
 import { Box, Chip, Divider, Grid, Typography } from "@mui/material";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
-import { alpha } from "@mui/material/styles";
+import AdjustIcon from "@mui/icons-material/Adjust";
 
-function OrderCard({ user, amount, stat }) {
+function OrderCard({ order, index }) {
+  const getInitial = (order) => {
+    const name = order.customerDetails.name;
+
+    let initial = "AM";
+
+    if (name) {
+      const words = name.trim().split(" ");
+
+      if (words.length >= 2) {
+        // Take first letter of first two words
+        initial = words[0][0].toUpperCase() + words[1][0].toUpperCase();
+      } else {
+        // Only one word → take first 2 letters
+        initial = words[0].slice(0, 2).toUpperCase();
+      }
+    }
+
+    return { initial, name };
+  };
   return (
     <Grid
       container
@@ -26,7 +45,7 @@ function OrderCard({ user, amount, stat }) {
               justifyContent: "center",
             }}
           >
-            US
+            {getInitial(order).initial}
           </Box>
           <Box
             sx={{
@@ -35,34 +54,55 @@ function OrderCard({ user, amount, stat }) {
               alignItems: "start",
             }}
           >
-            <Typography>{user}</Typography>
-            <Typography variant="caption">#1011 / Dine in</Typography>
+            <Typography>{order.customerDetails.name}</Typography>
+            <Typography variant="caption">#10{index} / Dine in</Typography>
           </Box>
         </Box>
 
         <Box
           sx={{ display: "flex", flexDirection: "column", alignItems: "end" }}
         >
-          <Chip
-            icon={<DoneAllIcon />}
-            label="Ready"
-            sx={{
-              backgroundColor: "#54D62C33",
-              color: "#54D62C",
-              "& .MuiChip-icon": {
+          {order.orderStatus === "preparing" ? (
+            <Chip
+              icon={<AdjustIcon />}
+              label="Preparing"
+              sx={{
+                backgroundColor: "#FFA72633",
+                color: "#FFA726",
+                "& .MuiChip-icon": {
+                  color: "#FFA726",
+                },
+              }}
+            />
+          ) : order.orderStatus === "Ready" ? (
+            <Chip
+              icon={<DoneAllIcon />}
+              label="Ready"
+              sx={{
+                backgroundColor: "#54D62C33",
                 color: "#54D62C",
-              },
-            }}
-          />
-          <Typography variant="caption">Ready to Serve</Typography>
+                "& .MuiChip-icon": {
+                  color: "#54D62C",
+                },
+              }}
+            />
+          ) : null}
+          {order.orderStatus === "preparing" ? (
+            <Typography variant="caption">Order In Progress</Typography>
+          ) : order.orderStatus === "ready" ? (
+            <Typography variant="caption">Ready to Serve</Typography>
+          ) : null}
         </Box>
       </Grid>
       <Grid size={12} sx={{ display: "flex", justifyContent: "space-between" }}>
         <Box>
-          <Typography variant="caption">March 26, 2026 02:26 PM</Typography>
+          <Typography variant="caption">{order.orderDate}</Typography>
         </Box>
         <Box>
-          <Typography variant="caption"> 3 Items </Typography>
+          <Typography variant="caption">
+            {" "}
+            {order.items.length} Items{" "}
+          </Typography>
         </Box>
       </Grid>
       <Divider
@@ -79,7 +119,7 @@ function OrderCard({ user, amount, stat }) {
         </Box>
         <Box>
           {" "}
-          <Typography>$ 49.50</Typography>{" "}
+          <Typography>$ {order.bills.total}</Typography>{" "}
         </Box>
       </Grid>
     </Grid>

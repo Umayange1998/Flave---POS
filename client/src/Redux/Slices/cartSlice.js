@@ -35,6 +35,9 @@ const cartSlice = createSlice({
         }
       }
     },
+    removeAllItem: (state) => {
+      return [];
+    },
   },
 });
 
@@ -43,6 +46,11 @@ export const getTotalPrice = (state) =>
     (total, item) => total + item.pricePerQnt * item.quantity,
     0,
   );
-export const { addItem, decreaseItem, removeItem, increaseItem } =
-  cartSlice.actions;
+export const {
+  addItem,
+  decreaseItem,
+  removeItem,
+  increaseItem,
+  removeAllItem,
+} = cartSlice.actions;
 export default cartSlice.reducer;

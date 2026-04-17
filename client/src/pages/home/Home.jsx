@@ -32,7 +32,7 @@ function Home() {
               title={"Pending"}
               amount={12}
               icon={<HourglassTopIcon color="warning" />}
-              stat={16}
+              // stat={16}
             />
           </Grid>
           <Grid size={12}>

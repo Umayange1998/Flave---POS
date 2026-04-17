@@ -45,7 +45,7 @@ function TabOne() {
                 <Typography variant="caption">Outbound Clicks</Typography>
               </Box>
               <Box>
-                <Typography variant="h5">$500</Typography>
+                <Typography variant="h5">500</Typography>
               </Box>
             </Grid>
             <Grid
@@ -62,7 +62,7 @@ function TabOne() {
                 <Typography variant="caption">Total Customer</Typography>
               </Box>
               <Box>
-                <Typography variant="h5">$500</Typography>
+                <Typography variant="h5">451</Typography>
               </Box>
             </Grid>
             <Grid
@@ -79,7 +79,7 @@ function TabOne() {
                 <Typography variant="caption">Event Count</Typography>
               </Box>
               <Box>
-                <Typography variant="h5">$500</Typography>
+                <Typography variant="h5">200</Typography>
               </Box>
             </Grid>
           </Grid>
@@ -106,10 +106,10 @@ function TabOne() {
               }}
             >
               <Box>
-                <Typography variant="caption">Revenue</Typography>
+                <Typography variant="caption">Total Catergories</Typography>
               </Box>
               <Box>
-                <Typography variant="h5">$500</Typography>
+                <Typography variant="h5">8</Typography>
               </Box>
             </Grid>
             <Grid
@@ -123,10 +123,10 @@ function TabOne() {
               }}
             >
               <Box>
-                <Typography variant="caption">Revenue</Typography>
+                <Typography variant="caption">Total Dishes</Typography>
               </Box>
               <Box>
-                <Typography variant="h5">$500</Typography>
+                <Typography variant="h5">51</Typography>
               </Box>
             </Grid>
             <Grid
@@ -140,10 +140,10 @@ function TabOne() {
               }}
             >
               <Box>
-                <Typography variant="caption">Revenue</Typography>
+                <Typography variant="caption">Active Orders</Typography>
               </Box>
               <Box>
-                <Typography variant="h5">$500</Typography>
+                <Typography variant="h5">12</Typography>
               </Box>
             </Grid>
             <Grid
@@ -157,10 +157,10 @@ function TabOne() {
               }}
             >
               <Box>
-                <Typography variant="caption">Revenue</Typography>
+                <Typography variant="caption">Total tables</Typography>
               </Box>
               <Box>
-                <Typography variant="h5">$500</Typography>
+                <Typography variant="h5">15</Typography>
               </Box>
             </Grid>
           </Grid>

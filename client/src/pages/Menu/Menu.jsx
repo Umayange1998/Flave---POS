@@ -9,15 +9,26 @@ import ItemCard from "./ItemCard.jsx";
 import CutomerDetail from "./CutomerDetail.jsx";
 import CartItem from "./CartItem.jsx";
 import { useDispatch, useSelector } from "react-redux";
-import { addItem, getTotalPrice } from "../../Redux/Slices/cartSlice.js";
+import {
+  addItem,
+  getTotalPrice,
+  removeAllItem,
+} from "../../Redux/Slices/cartSlice.js";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { addOrder, createPayment, updateTable } from "../../https/index.js";
+import { removeCustomer } from "../../Redux/Slices/cutomerSlice.js";
+import { QRCodeCanvas } from "qrcode.react";
+import { useQuery } from "@tanstack/react-query";
+import api from "../../https";
 
 function Menu() {
   const [selectedCategory, setSelectedCategory] = useState("Mains");
   const [paymentMethod, setPaymentMethod] = useState("");
+  const [qrUrl, setQrUrl] = useState(null);
+  const [currentOrderId, setCurrentOrderId] = useState(null);
   const customerData = useSelector((state) => state.customer);
   const cartData = useSelector((state) => state.cart);
   const dispatch = useDispatch();
@@ -41,30 +52,7 @@ function Menu() {
     }
   }
 
-  const useCreateOrder = (baseURL, token) => {
-    return useMutation({
-      mutationFn: async (orderData) => {
-        const res = await axios.post(`${baseURL}/orders/addorder`, orderData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        return res.data.data; // return order
-      },
-    });
-  };
-  const useCreatePayment = (baseURL) => {
-    return useMutation({
-      mutationFn: async (paymentData) => {
-        const res = await axios.post(`${baseURL}/payment/place`, paymentData);
-        return res.data;
-      },
-    });
-  };
   const token = localStorage.getItem("token");
-
-  const createOrderMutation = useCreateOrder(baseURL, token);
-  const createPaymentMutation = useCreatePayment(baseURL);
 
   const handlePlaceOrder = async () => {
     try {
@@ -74,48 +62,102 @@ function Menu() {
         return;
       }
 
-      // 🧾 1. CREATE ORDER FIRST
+      //  CREATE ORDER FIRST
       const orderData = {
         customerDetails: {
           name: customerData.customerName,
           phone: customerData.customerPhone,
           guests: customerData.guests,
         },
-        orderStatus: "pending",
+        orderStatus: "preparing",
         bills: {
           total: total,
         },
         items: cartData,
-        table: customerData.tableId,
+        table: customerData.table.tableId,
       };
 
-      const order = await createOrderMutation.mutateAsync(orderData);
-
-      const orderId = order._id;
-
-      // 💵 2. CASH FLOW
-      if (paymentMethod === "cash") {
-        toast.success("Order placed (Cash)");
-        navigate("/orders");
-        console.log("Order ID:", orderId);
-        return;
-      }
-
-      // 💳 3. ONLINE (Stripe)
-      const paymentRes = await createPaymentMutation.mutateAsync({
-        orderId,
-        amount: total,
-        customerEmail: customerData.email,
-      });
-
-      if (paymentRes.sessionUrl) {
-        window.location.href = paymentRes.sessionUrl;
-      }
+      setTimeout(() => {
+        orderMutation.mutate(orderData);
+      }, 1500);
     } catch (err) {
       console.log(err);
       toast.error("Order failed");
     }
   };
+  const orderMutation = useMutation({
+    mutationFn: (reqData) => addOrder(reqData),
+    onSuccess: (resData) => {
+      const { data } = resData.data;
+      console.log(data);
+      setCurrentOrderId(data._id);
+      // Update Table
+      const tableData = {
+        status: "Booked",
+        orderId: data._id,
+        tableId: data.table,
+      };
+      if (paymentMethod === "online") {
+        localStorage.setItem("tableId", data.table);
+        paymentMutation.mutate({
+          orderId: data._id,
+          amount: total,
+          customerEmail: customerData.email,
+        });
+        return;
+      }
+
+      // CASH FLOW
+      toast.success("Order Placed (Cash)");
+      setTimeout(() => {
+        tableUpdateMutation.mutate(tableData);
+        console.log("tableData", tableData);
+      }, 1500);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+  const paymentMutation = useMutation({
+    mutationFn: (paymentData) => createPayment(paymentData),
+    onSuccess: (resData) => {
+      console.log("Payment session:", resData);
+      const sessionUrl = resData.data.sessionUrl;
+
+      if (sessionUrl) {
+        // window.location.href = sessionUrl;
+        setQrUrl(sessionUrl);
+      } else {
+        toast.error("Payment failed");
+      }
+    },
+    onError: (error) => {
+      console.log(error);
+      toast.error("Payment failed");
+    },
+  });
+
+  const tableUpdateMutation = useMutation({
+    mutationFn: (reqData) => updateTable(reqData),
+    onSuccess: (resData) => {
+      console.log("resData", resData);
+      dispatch(removeCustomer());
+      dispatch(removeAllItem());
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+  const { data: paymentStatus } = useQuery({
+    queryKey: ["paymentStatus", currentOrderId],
+    queryFn: async () => {
+      const res = await api.get(`/payment/status/${currentOrderId}`);
+      return res.data.status;
+    },
+    enabled: !!currentOrderId, // only run when order exists
+    refetchInterval: (data) => (data === "paid" ? false : 3000),
+  });
   return (
     <Grid container spacing={6} sx={{ mt: "80px", px: 5 }}>
       <Grid size={9} sx={{ display: "flex", flexDirection: "column" }}>
@@ -151,7 +193,7 @@ function Menu() {
                   {customerData.customerName || "Customer Name"}
                 </Typography>
                 <Typography variant="caption">
-                  Table No : {customerData.tableNo}
+                  Table No : {customerData.table?.tableNo || "N/A"}
                 </Typography>
               </Box>
             </Box>
@@ -338,6 +380,51 @@ function Menu() {
             </Box>
           </Grid>
         </Grid>
+        {qrUrl && (
+          // <Grid container spacing={2}>
+          //   {" "}
+          //   <Grid size={12} sx={{}}></Grid>
+          <Box
+            sx={{
+              mt: 2,
+              textAlign: "center",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              gap: 2,
+              alignContent: "space-between",
+            }}
+          >
+            <Typography variant="body2">Scan to Pay</Typography>
+            <Box
+              sx={{
+                // mt: 2,
+                textAlign: "center",
+                display: "flex",
+                // flexDirection: "column",
+                justifyContent: "center",
+                gap: 2,
+                // alignContent: "space-between",
+              }}
+            >
+              <QRCodeCanvas value={qrUrl} size={180} />
+            </Box>
+
+            <Typography variant="caption">Waiting for payment...</Typography>
+          </Box>
+          // </Grid>
+        )}
+        {currentOrderId && (
+          <Box textAlign="center">
+            <Typography variant="caption">Payment Status:</Typography>
+
+            <Typography
+              color={paymentStatus === "paid" ? "success.main" : "warning.main"}
+            >
+              {paymentStatus || "pending"}
+            </Typography>
+          </Box>
+        )}
       </Grid>
     </Grid>
   );

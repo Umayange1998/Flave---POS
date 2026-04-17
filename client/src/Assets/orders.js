@@ -11,7 +11,7 @@ export const orders = [
   {
     id: "102",
     customer: "John Doe",
-    status: "InProgress",
+    status: "preparing",
     dateTime: "January 18, 2025 08:45 PM",
     items: 5,
     tableNo: 4,
@@ -29,7 +29,7 @@ export const orders = [
   {
     id: "104",
     customer: "Chris Brown",
-    status: "InProgress",
+    status: "preparing",
     dateTime: "January 18, 2025 09:15 PM",
     items: 6,
     tableNo: 6,

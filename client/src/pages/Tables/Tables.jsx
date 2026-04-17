@@ -135,6 +135,7 @@ function Tables() {
             return (
               <Grid size={2.3}>
                 <TableCard
+                  id={table._id}
                   name={table.tableNo}
                   status={table.status}
                   initial={getInitial(table).initial}

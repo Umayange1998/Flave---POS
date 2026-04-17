@@ -10,14 +10,14 @@ function getRandomColor() {
   return colors[num];
 }
 
-function TableCard({ name, status, initial, user }) {
+function TableCard({ id, name, status, initial, user }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const customerDetails = useSelector((state) => state.customer);
-
+  const table = { tableId: id, tableNo: name };
   const handleOnclick = (name) => {
     if (status === "Booked" || customerDetails.customerName === "") return;
-    dispatch(updateTable({ tableNo: name }));
+    dispatch(updateTable({ table }));
     console.log("clicked", customerDetails.customerName);
     navigate("/menu");
   };
@@ -33,6 +33,7 @@ function TableCard({ name, status, initial, user }) {
       sx={{
         cursor: "pointer",
       }}
+      key={id}
       onClick={() => handleOnclick(name)}
     >
       <Grid
